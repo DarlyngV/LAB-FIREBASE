@@ -47,6 +47,9 @@ public class HallarRecorrido {
              Log.d("hallando","distance: "+distance);
              anterior= locationB;
              total+=distance;
+
+
+
          }
 
 

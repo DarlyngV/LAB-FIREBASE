@@ -49,7 +49,7 @@
         android:gravity="center_horizontal"
         android:text="0"
         android:textAlignment="center"
-        android:textSize="36sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintHorizontal_bias="0.477"
         app:layout_constraintStart_toStartOf="@+id/textView"
@@ -57,7 +57,7 @@
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="41dp"
+        android:layout_width="42dp"
         android:layout_height="25dp"
         android:gravity="center_horizontal"
         android:text="metros"

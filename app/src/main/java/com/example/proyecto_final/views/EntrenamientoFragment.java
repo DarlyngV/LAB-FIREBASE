@@ -2,8 +2,11 @@ package com.example.proyecto_final.views;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -36,27 +39,40 @@ import com.example.proyecto_final.R;
 import com.example.proyecto_final.entities.Coordenada;
 import com.example.proyecto_final.entities.Modo;
 import com.example.proyecto_final.viewmodels.EntrenamientoViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 public class EntrenamientoFragment extends Fragment {
     private Spinner spinner;
     private Button iniciar;
     private Button terminar;
     private TextView kilometros;
-    private EntrenamientoViewModel homeViewModel;
-    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000 * 5 *1; // 1 minuto
+    public  EntrenamientoViewModel homeViewModel;
+    private static final long MIN_TIEMPO_ENTRE_UPDATES = 1000 * 5 * 1; // 1 minuto
     private static final long MIN_CAMBIO_DISTANCIA_PARA_UPDATES = 1; // 1.5 metros
     private static daoModo dao;
+    private  double longitud ;
+    private double latitud;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
                 ViewModelProviders.of(this).get(EntrenamientoViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_entrenamiento, container, false);
-
+        /*-----------------------------------------------------------------------------------------------------------------*/
+        /*
+         * Prepara la interfaz
+         * */
         configView(root);
+        /*-----------------------------------------------------------------------------------------------------------------*/
+
+
+        /*ubicación*/
+        /*
 
         LocationManager locationManager;
 
@@ -103,15 +119,94 @@ public class EntrenamientoFragment extends Fragment {
 
         int permissionCheck= ContextCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
         if(permissionCheck== PackageManager.PERMISSION_DENIED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale((Activity) root.getContext(),Manifest.permission.ACCESS_FINE_LOCATION)){
+            if(ActivityCompat.shouldShowRequestPermissionRationale((Activity) root.getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)){
 
             }
             else{
-                ActivityCompat.requestPermissions((Activity) root.getContext(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+                ActivityCompat.requestPermissions((Activity) root.getContext(), new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION},1);
             }
         }
 
-       final Observer<String> observer = new Observer<String>() {
+         */
+        /* Ubicación 2 */
+
+        /*-----------------------------------------------------------------------------------------------------------------*/
+        /*PERMISOS*/
+      /*  int permissionCheck= ContextCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        if(permissionCheck== PackageManager.PERMISSION_DENIED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale((Activity) root.getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            }
+            else{
+                ActivityCompat.requestPermissions((Activity) root.getContext(), new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION},1);
+            }
+        }*/
+        /*-----------------------------------------------------------------------------------------------------------------*/
+
+  /*      Intent intent = new Intent(getActivity(), MyLocationUpdateReceiver.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        final LocationManager locationManager = (LocationManager) root.getContext().getSystemService(Context.LOCATION_SERVICE);
+        int permissionCheck= ContextCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,MIN_TIEMPO_ENTRE_UPDATES,MIN_CAMBIO_DISTANCIA_PARA_UPDATES,pendingIntent);
+*/
+
+
+
+
+
+        iniciar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Prueba2", "onReceive: ");
+              //  int permissionCheck= ContextCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+              /*  Intent intent = new Intent(getActivity(), MyLocationUpdateReceiver.class);
+                PendingIntent pendingIntent =
+                        PendingIntent.getBroadcast(root.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                final LocationManager locationManager = (LocationManager) root.getContext().getSystemService(Context.LOCATION_SERVICE);
+                int permissionCheck= ContextCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,MIN_TIEMPO_ENTRE_UPDATES,MIN_CAMBIO_DISTANCIA_PARA_UPDATES,pendingIntent);
+*/
+                FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(root.getContext());
+                LocationRequest request = new LocationRequest()
+                        .setInterval(60000 * 2) // Update every 2 minutes.
+                        .setPriority(LocationRequest.PRIORITY_NO_POWER);
+                final int locationUpdateRC = 0;
+                int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                Intent intent = new Intent(root.getContext(), MyLocationUpdateReceiver.class);
+                PendingIntent pendingIntent =
+                        PendingIntent.getBroadcast(root.getContext(), locationUpdateRC, intent, flags);
+
+                if (ActivityCompat.checkSelfPermission(root.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(root.getContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                }
+
+                fusedLocationClient.requestLocationUpdates(request, pendingIntent);
+
+            }
+
+
+        });
+
+
+        /*-----------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+/* ****************************************************************************************************** */
+/*Observador*/
+
+     final Observer<String> observer = new Observer<String>() {
             @Override
             public void onChanged(String resultado) {
                 kilometros.setText(resultado);
@@ -123,8 +218,27 @@ public class EntrenamientoFragment extends Fragment {
 
 
 
+
+
+
+
+
         return root;
     }
+
+
+
+public void actualizar(double latitud, double longitud){
+        this.latitud=latitud;
+        this.longitud=longitud;
+    Log.d("Pruebasa", "onReceive: "+latitud+longitud);
+
+}
+
+
+
+
+
 
     public void configView(View root){
         spinner= (Spinner) root.findViewById(R.id.modo);

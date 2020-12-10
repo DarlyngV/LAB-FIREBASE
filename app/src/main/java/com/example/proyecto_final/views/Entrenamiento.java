@@ -1,7 +1,9 @@
 package com.example.proyecto_final.views;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +20,9 @@ import android.widget.TextView;
 import com.example.proyecto_final.DAO.ConexionSQLiteHelper;
 import com.example.proyecto_final.DAO.Utilidades;
 import com.example.proyecto_final.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +52,19 @@ public class Entrenamiento extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        /* ************************************************************************************************* */
+    /*    FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        LocationRequest request = new LocationRequest()
+                .setInterval(60000 * 10) // Update every 10 minutes.
+                .setPriority(LocationRequest.PRIORITY_NO_POWER);
+        final int locationUpdateRC = 0;
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        Intent intent = new Intent(this, MyLocationUpdateReceiver.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(this, locationUpdateRC, intent, flags);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+        fusedLocationClient.requestLocationUpdates(request, pendingIntent);*/
 
     }
 

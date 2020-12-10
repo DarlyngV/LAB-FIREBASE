@@ -25,6 +25,7 @@ public class EntrenamientoViewModel extends ViewModel {
     }
 
    public void RecorridoTotal(double latitud, double longitud, Date now){
-       mText.setValue(HallarRecorrido.RecorridoTotal(latitud,longitud, now));
+      // mText.setValue(HallarRecorrido.RecorridoTotal(latitud,longitud, now));
+       //mText.setValue(latitud+";"+longitud);
    }
 }
